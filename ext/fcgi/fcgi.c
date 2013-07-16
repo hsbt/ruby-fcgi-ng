@@ -261,7 +261,6 @@ static VALUE fcgi_stream_putc(VALUE self, VALUE ch)
   FCGX_Stream *stream;
   int c;
 
-  rb_secure(4);
   Data_Get_Stream(self, stream);
   if ((c = FCGX_PutChar(NUM2INT(ch), stream)) == EOF)
     CHECK_STREAM_ERROR(stream);
@@ -273,7 +272,6 @@ static VALUE fcgi_stream_write(VALUE self, VALUE str)
   FCGX_Stream *stream;
   int len;
 
-  rb_secure(4);
   Data_Get_Stream(self, stream);
   str = rb_obj_as_string(str);
   len = FCGX_PutStr(RSTRING_PTR(str), RSTRING_LEN(str), stream);
