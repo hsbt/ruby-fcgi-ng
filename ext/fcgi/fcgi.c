@@ -262,7 +262,6 @@ static VALUE fcgi_stream_putc(VALUE self, VALUE ch)
   FCGX_Stream *stream;
   int c;
 
-  rb_secure(4);
   Data_Get_Stream(self, stream);
   if ((c = FCGX_PutChar(NUM2INT(ch), stream)) == EOF)
     CHECK_STREAM_ERROR(stream);
@@ -274,7 +273,6 @@ static VALUE fcgi_stream_write(VALUE self, VALUE str)
   FCGX_Stream *stream;
   int len;
 
-  rb_secure(4);
   Data_Get_Stream(self, stream);
   str = rb_obj_as_string(str);
   len = FCGX_PutStr(RSTRING_PTR(str), RSTRING_LEN(str), stream);
@@ -407,9 +405,6 @@ static VALUE fcgi_stream_ungetc(VALUE self, VALUE ch)
   FCGX_Stream *stream;
   int c;
 
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
   Data_Get_Stream(self, stream);
   c = FCGX_UnGetChar(NUM2INT(ch), stream);
   CHECK_STREAM_ERROR(stream);
@@ -421,10 +416,6 @@ static VALUE fcgi_stream_gets(VALUE self) {
   char buff[BUFSIZ];
   VALUE str = rb_str_new(0,0);
   OBJ_TAINT(str);
-
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
 
   Data_Get_Stream(self, stream);
 
@@ -448,10 +439,6 @@ static VALUE fcgi_stream_read(int argc, VALUE *argv, VALUE self)
   FCGX_Stream *stream;
   char *buff;
   int n;
-
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
 
   Data_Get_Stream(self, stream);
 
@@ -502,9 +489,6 @@ static VALUE fcgi_stream_eof(VALUE self)
 {
   FCGX_Stream *stream;
 
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
   Data_Get_Stream(self, stream);
   return FCGX_HasSeenEOF(stream) ? Qtrue : Qfalse;
 }
@@ -513,9 +497,6 @@ static VALUE fcgi_stream_close(VALUE self)
 {
   FCGX_Stream *stream;
 
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: can't close");
-  }
   Data_Get_Stream(self, stream);
   if (FCGX_FClose(stream) == EOF)
     CHECK_STREAM_ERROR(stream);
@@ -532,33 +513,21 @@ static VALUE fcgi_stream_closed(VALUE self)
 
 static VALUE fcgi_stream_binmode(VALUE self)
 {
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
   return self;
 }
 
 static VALUE fcgi_stream_isatty(VALUE self)
 {
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
   return Qfalse;
 }
 
 static VALUE fcgi_stream_sync(VALUE self)
 {
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
   return Qfalse;
 }
 
 static VALUE fcgi_stream_setsync(VALUE self,VALUE sync)
 {
-  if (rb_safe_level() >= 4 && !OBJ_TAINTED(self)) {
-    rb_raise(rb_eSecurityError, "Insecure: operation on untainted IO");
-  }
   return Qfalse;
 }
 
